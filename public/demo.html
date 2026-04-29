@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VeerNXT — Creating Military Leaders</title>
+  <style>
+    /* ─── Reset & Base ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0a0f1e;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    /* ─── Header ────────────────────────────────────────────── */
+    header {
+      background: linear-gradient(135deg, #2F4F4F 0%, #1a2a1a 100%);
+      border-bottom: 2px solid #4B5320;
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .logo-badge {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, #C3B091, #A0947A);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; font-weight: 900; color: #0a0f1e;
+    }
+    header h1 { font-size: 1.6rem; font-weight: 700; color: #fff; }
+    header p  { font-size: 0.8rem; color: #94a3b8; margin-top: 2px; }
+    .tricolor {
+      margin-left: auto;
+      display: flex; flex-direction: column; gap: 3px;
+    }
+    .tricolor span { display: block; width: 40px; height: 6px; border-radius: 2px; }
+    .tricolor span:nth-child(1) { background: #FF9933; }
+    .tricolor span:nth-child(2) { background: #ffffff; }
+    .tricolor span:nth-child(3) { background: #138808; }
+
+    /* ─── Progress bar ──────────────────────────────────────── */
+    .progress-wrap {
+      background: #111827;
+      padding: 20px 32px 0;
+    }
+    .steps {
+      display: flex; align-items: center; gap: 0;
+      max-width: 900px; margin: 0 auto;
+    }
+    .step {
+      display: flex; flex-direction: column; align-items: center;
+      flex: 1; position: relative;
+    }
+    .step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 18px; left: 50%; width: 100%;
+      height: 2px; background: #374151; z-index: 0;
+    }
+    .step.done::after  { background: #4B5320; }
+    .step-dot {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: #1f2937; border: 2px solid #374151;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; z-index: 1;
+      color: #6b7280; transition: all .3s;
+    }
+    .step.active .step-dot { background: #4B5320; border-color: #4B5320; color: #0a0f1e; }
+    .step.done   .step-dot { background: #3A3F1A; border-color: #3A3F1A; color: #fff; }
+    .step-label { font-size: 0.65rem; color: #6b7280; margin-top: 6px; text-align: center; }
+    .step.active .step-label { color: #4B5320; }
+    .step.done   .step-label { color: #3A3F1A; }
+
+    /* ─── Main layout ───────────────────────────────────────── */
+    main {
+      max-width: 900px; margin: 0 auto;
+      padding: 28px 24px 60px;
+    }
+
+    /* ─── Section cards ─────────────────────────────────────── */
+    .section-card {
+      display: none;
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 24px;
+      animation: fadeIn .35s ease;
+    }
+    .section-card.active { display: block; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+
+    .section-title {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 1.15rem; font-weight: 700;
+      color: #4B5320; margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #1f2937;
+    }
+    .section-title .icon { font-size: 1.4rem; }
+
+    /* ─── Form fields ───────────────────────────────────────── */
+    .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .field-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .field-grid.cols-1 { grid-template-columns: 1fr; }
+    @media(max-width:600px) { .field-grid, .field-grid.cols-3 { grid-template-columns: 1fr; } }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field.span-2 { grid-column: span 2; }
+    label { font-size: 0.78rem; color: #94a3b8; font-weight: 500; letter-spacing: .02em; }
+    label span.req { color: #f87171; margin-left: 2px; }
+    input, select, textarea {
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      color: #e2e8f0;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+      width: 100%;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: #4B5320;
+      box-shadow: 0 0 0 3px rgba(75,83,32,.15);
+    }
+    select option { background: #1f2937; }
+
+    /* Checkbox group */
+    .checkbox-group {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .checkbox-group label {
+      display: flex; align-items: center; gap: 7px;
+      background: #1f2937; border: 1px solid #374151;
+      border-radius: 8px; padding: 7px 14px;
+      cursor: pointer; font-size: 0.83rem; color: #cbd5e1;
+      transition: all .2s; user-select: none;
+    }
+    .checkbox-group label:hover { border-color: #4B5320; }
+    .checkbox-group input[type=checkbox] {
+      width: 16px; height: 16px; border-radius: 4px;
+      accent-color: #f59e0b; flex-shrink: 0;
+    }
+    .checkbox-group label:has(input:checked) {
+      background: rgba(75,83,32,.12);
+      border-color: #4B5320; color: #A5B84A;
+    }
+
+    /* Radio group */
+    .radio-group { display: flex; flex-wrap: wrap; gap: 8px; }
+    .radio-group label {
+      display: flex; align-items: center; gap: 7px;
+      background: #1f2937; border: 1px solid #374151;
+      border-radius: 8px; padding: 7px 14px;
+      cursor: pointer; font-size: 0.83rem; color: #cbd5e1;
+      transition: all .2s; user-select: none;
+    }
+    .radio-group label:hover { border-color: #4B5320; }
+    .radio-group input[type=radio] { accent-color: #f59e0b; width:16px;height:16px; }
+    .radio-group label:has(input:checked) {
+      background: rgba(75,83,32,.12); border-color: #4B5320; color: #A5B84A;
+    }
+
+    /* ─── Navigation buttons ────────────────────────────────── */
+    .nav-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 30px;
+    }
+    .btn {
+      padding: 11px 28px; border-radius: 10px;
+      font-size: 0.92rem; font-weight: 600;
+      cursor: pointer; border: none; transition: all .2s;
+    }
+    .btn-outline {
+      background: transparent; border: 1px solid #374151; color: #94a3b8;
+    }
+    .btn-outline:hover { border-color: #4B5320; color: #4B5320; }
+    .btn-primary {
+      background: linear-gradient(135deg, #4B5320, #3A3F1A);
+      color: #0a0f1e;
+    }
+    .btn-primary:hover { opacity: .9; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(75,83,32,.35); }
+    .btn-submit {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #fff; padding: 14px 40px; font-size: 1rem;
+    }
+    .btn-submit:hover { opacity:.9; transform:translateY(-1px); box-shadow:0 4px 14px rgba(34,197,94,.4); }
+    .btn:disabled { opacity:.5; cursor:not-allowed; transform:none!important; }
+
+    /* ─── Loader ────────────────────────────────────────────── */
+    #loader {
+      display: none; text-align: center; padding: 60px 20px;
+    }
+    .spinner {
+      width: 56px; height: 56px;
+      border: 4px solid #1f2937;
+      border-top-color: #4B5320;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #loader p { color: #94a3b8; font-size: 0.95rem; }
+
+    /* ─── Results ───────────────────────────────────────────── */
+    #results { display: none; }
+    .results-header {
+      background: linear-gradient(135deg, #2F4F4F, #1a2a1a);
+      border: 1px solid #4B5320;
+      border-radius: 16px; padding: 24px 28px;
+      margin-bottom: 24px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .results-header h2 { font-size: 1.35rem; color: #4B5320; font-weight: 700; }
+    .results-header p  { font-size: 0.85rem; color: #94a3b8; margin-top: 4px; }
+    .stats-row { display: flex; gap: 20px; flex-wrap: wrap; }
+    .stat-chip {
+      background: rgba(75,83,32,.1);
+      border: 1px solid rgba(75,83,32,.3);
+      border-radius: 20px; padding: 6px 16px;
+      font-size: 0.8rem; color: #A5B84A;
+    }
+
+    /* Exam card */
+    .exam-card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 14px; padding: 22px 24px;
+      margin-bottom: 14px;
+      transition: border-color .2s, transform .2s;
+      cursor: pointer;
+      animation: fadeIn .4s ease both;
+    }
+    .exam-card:hover { border-color: #4B5320; transform: translateY(-2px); }
+    .exam-card.rank-1 { border-color: #4B5320; background: linear-gradient(135deg, #1a1500, #111827); }
+    .exam-card.rank-2 { border-color: #9ca3af; }
+    .exam-card.rank-3 { border-color: #b45309; }
+
+    .card-top {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 16px;
+    }
+    .rank-badge {
+      width: 40px; height: 40px; flex-shrink: 0;
+      border-radius: 10px; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 800;
+    }
+    .rank-1 .rank-badge { background: #4B5320; color: #0a0f1e; }
+    .rank-2 .rank-badge { background: #9ca3af; color: #0a0f1e; }
+    .rank-3 .rank-badge { background: #b45309; color: #fff; }
+    .rank-other .rank-badge { background: #1f2937; color: #94a3b8; }
+
+    .card-info { flex: 1; }
+    .card-info h3 { font-size: 1rem; font-weight: 700; color: #f1f5f9; margin-bottom: 4px; }
+    .card-info .body { font-size: 0.8rem; color: #64748b; margin-bottom: 10px; }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      padding: 3px 10px; border-radius: 20px;
+      font-size: 0.72rem; font-weight: 600;
+    }
+    .tag-track { background: rgba(99,102,241,.2); color: #a5b4fc; }
+    .tag-level { background: rgba(16,185,129,.15); color: #6ee7b7; }
+    .tag-state { background: rgba(236,72,153,.15); color: #f9a8d4; }
+    .tag-esm   { background: rgba(245,158,11,.15); color: #fcd34d; }
+    .tag-ncc   { background: rgba(139,92,246,.15); color: #c4b5fd; }
+
+    .score-col { text-align: right; flex-shrink: 0; }
+    .score-val { font-size: 1.8rem; font-weight: 800; color: #4B5320; line-height: 1; }
+    .score-lbl { font-size: 0.68rem; color: #64748b; text-transform: uppercase; letter-spacing: .06em; }
+
+    /* Score bar breakdown */
+    .breakdown { margin-top: 14px; padding-top: 14px; border-top: 1px solid #1f2937; }
+    .breakdown-row { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
+    .breakdown-label { font-size: 0.73rem; color: #64748b; width: 130px; flex-shrink: 0; }
+    .bar-track {
+      flex: 1; height: 6px; background: #1f2937;
+      border-radius: 3px; overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, #4B5320, #3A3F1A);
+      transition: width .8s ease;
+    }
+    .breakdown-val { font-size: 0.73rem; color: #94a3b8; width: 30px; text-align: right; }
+
+    .website-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 12px; font-size: 0.78rem; color: #60a5fa;
+      text-decoration: none;
+    }
+    .website-link:hover { color: #93c5fd; }
+
+    /* ─── Error banner ──────────────────────────────────────── */
+    #error-banner {
+      display: none; background: rgba(239,68,68,.12);
+      border: 1px solid #ef4444; border-radius: 12px;
+      padding: 16px 20px; margin-bottom: 20px; color: #fca5a5;
+      font-size: 0.875rem;
+    }
+
+    /* ─── Reset link ────────────────────────────────────────── */
+    .reset-row { text-align: center; margin-top: 28px; }
+    .reset-btn {
+      background: transparent; border: 1px solid #374151;
+      color: #94a3b8; border-radius: 10px; padding: 10px 24px;
+      cursor: pointer; font-size: 0.85rem; transition: all .2s;
+    }
+    .reset-btn:hover { border-color: #4B5320; color: #4B5320; }
+
+    /* ─── Tooltips / labels ─────────────────────────────────── */
+    .hint { font-size: 0.72rem; color: #64748b; margin-top: 2px; }
+  </style>
+</head>
+<body>
+
+<!-- ════════ TAGLINE ════════ -->
+<div style="text-align: center; padding: 10px; background: #0a0f1e; color: #4B5320; font-size: 1.2rem; font-weight: bold; border-bottom: 1px solid #4B5320;">
+  THE COUNTRY IS STRONG WITH A STRONG ARMY
+</div>
+
+<!-- ════════ HEADER ════════ -->
+<header>
+  <div class="logo-badge">VN</div>
+  <div>
+    <h1>VeerNXT — Creating Military Leaders</h1>
+    <p>Personalized Career Profiling Engine for Agniveers — Find your best-fit exams and build a strong military career</p>
+  </div>
+  <div class="tricolor">
+    <span></span><span></span><span></span>
+  </div>
+</header>
+
+<!-- ════════ PROGRESS ════════ -->
+<div class="progress-wrap">
+  <div class="steps" id="stepsBar">
+    <div class="step active" data-s="0"><div class="step-dot">A</div><div class="step-label">Identity</div></div>
+    <div class="step"         data-s="1"><div class="step-dot">B</div><div class="step-label">Service</div></div>
+    <div class="step"         data-s="2"><div class="step-dot">C</div><div class="step-label">Academics</div></div>
+    <div class="step"         data-s="3"><div class="step-dot">D</div><div class="step-label">Physical</div></div>
+    <div class="step"         data-s="4"><div class="step-dot">E</div><div class="step-label">Career Intent</div></div>
+    <div class="step"         data-s="5"><div class="step-dot">F</div><div class="step-label">Interests</div></div>
+    <div class="step"         data-s="6"><div class="step-dot">✓</div><div class="step-label">Review</div></div>
+  </div>
+</div>
+
+<!-- ════════ MAIN ════════ -->
+<main>
+  <div id="error-banner"></div>
+
+  <!-- ── Section A: Identity ── -->
+  <div class="section-card active" id="sec-0">
+    <div class="section-title"><span class="icon">🪖</span> Section A — Identity &amp; Legal Eligibility</div>
+    <div class="field-grid">
+      <div class="field">
+        <label>Full Name <span class="req">*</span></label>
+        <input type="text" id="fullName" placeholder="e.g. Rajesh Kumar Singh" />
+      </div>
+      <div class="field">
+        <label>Date of Birth <span class="req">*</span></label>
+        <input type="date" id="dateOfBirth" />
+      </div>
+      <div class="field">
+        <label>Category <span class="req">*</span></label>
+        <select id="category">
+          <option value="">— Select —</option>
+          <option>General</option><option>OBC</option>
+          <option>SC</option><option>ST</option><option>EWS</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>State of Domicile <span class="req">*</span></label>
+        <select id="stateOfDomicile">
+          <option value="">— Select State/UT —</option>
+          <option>Andhra Pradesh</option><option>Arunachal Pradesh</option>
+          <option>Assam</option><option>Bihar</option><option>Chhattisgarh</option>
+          <option>Goa</option><option>Gujarat</option><option>Haryana</option>
+          <option>Himachal Pradesh</option><option>Jharkhand</option>
+          <option>Karnataka</option><option>Kerala</option>
+          <option>Madhya Pradesh</option><option>Maharashtra</option>
+          <option>Manipur</option><option>Meghalaya</option>
+          <option>Mizoram</option><option>Nagaland</option>
+          <option>Odisha</option><option>Punjab</option>
+          <option>Rajasthan</option><option>Sikkim</option>
+          <option>Tamil Nadu</option><option>Telangana</option>
+          <option>Tripura</option><option>Uttar Pradesh</option>
+          <option>Uttarakhand</option><option>West Bengal</option>
+          <option>Andaman and Nicobar Islands</option><option>Chandigarh</option>
+          <option>Delhi</option><option>Jammu and Kashmir</option>
+          <option>Ladakh</option><option>Puducherry</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Marital Status <span class="req">*</span></label>
+        <select id="maritalStatus">
+          <option value="">— Select —</option>
+          <option>Single</option><option>Married</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>District</label>
+        <input type="text" id="district" placeholder="e.g. Varanasi" />
+      </div>
+      <div class="field">
+        <label>Email Address <span class="req">*</span></label>
+        <input type="email" id="email" placeholder="you@example.com" />
+      </div>
+      <div class="field">
+        <label>Mobile Number <span class="req">*</span></label>
+        <input type="tel" id="mobile" placeholder="+91 98765 43210" />
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Section B: Service Record ── -->
+  <div class="section-card" id="sec-1">
+    <div class="section-title"><span class="icon">⚔️</span> Section B — Service Record</div>
+    <div class="field-grid">
+      <div class="field">
+        <label>Service Branch <span class="req">*</span></label>
+        <select id="serviceBranch">
+          <option value="">— Select —</option>
+          <option>Indian Army</option>
+          <option>Indian Navy</option>
+          <option>Indian Air Force</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Arm / Corps / Trade <span class="req">*</span></label>
+        <input type="text" id="armCorpsTrade" placeholder="e.g. Infantry, Signals, EME" />
+      </div>
+      <div class="field">
+        <label>Role / Appointment <span class="req">*</span></label>
+        <input type="text" id="roleAppointment" placeholder="e.g. Rifleman, Sepoy, Able Seaman" />
+      </div>
+      <div class="field">
+        <label>Total Service Duration <span class="req">*</span></label>
+        <input type="text" id="totalServiceDuration" placeholder="e.g. 4 years 0 months" />
+      </div>
+      <div class="field">
+        <label>Character on Discharge <span class="req">*</span></label>
+        <select id="characterOnDischarge">
+          <option value="">— Select —</option>
+          <option>Exemplary</option>
+          <option>Very Good</option>
+          <option>Good</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-top:22px">
+      <label style="display:block;margin-bottom:10px;">Military Courses Completed</label>
+      <div class="checkbox-group" id="militaryCourses">
+        <label><input type="checkbox" value="Basic Signals Course"> Basic Signals Course</label>
+        <label><input type="checkbox" value="Combat First Aid"> Combat First Aid</label>
+        <label><input type="checkbox" value="Special Forces Selection"> Special Forces Selection</label>
+        <label><input type="checkbox" value="Technical Trade Course"> Technical Trade Course</label>
+        <label><input type="checkbox" value="Driving & Mechanical"> Driving &amp; Mechanical</label>
+        <label><input type="checkbox" value="Weapon Training"> Weapon Training</label>
+        <label><input type="checkbox" value="NBC Warfare"> NBC Warfare</label>
+        <label><input type="checkbox" value="Leadership Course"> Leadership Course</label>
+      </div>
+    </div>
+
+    <div style="margin-top:22px">
+      <label style="display:block;margin-bottom:10px;">Specific Skills</label>
+      <div class="checkbox-group" id="specificSkills">
+        <label><input type="checkbox" value="IT / Computers"> IT / Computers</label>
+        <label><input type="checkbox" value="Communication & Radio"> Communication &amp; Radio</label>
+        <label><input type="checkbox" value="Medical / Para-medical"> Medical / Para-medical</label>
+        <label><input type="checkbox" value="Logistics & Supply"> Logistics &amp; Supply</label>
+        <label><input type="checkbox" value="Weapon Handling"> Weapon Handling</label>
+        <label><input type="checkbox" value="Engineering & Technical"> Engineering &amp; Technical</label>
+        <label><input type="checkbox" value="Languages"> Languages</label>
+        <label><input type="checkbox" value="Vehicle Driving"> Vehicle Driving</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Section C: Academics ── -->
+  <div class="section-card" id="sec-2">
+    <div class="section-title"><span class="icon">📚</span> Section C — Academic &amp; Additional Weightage</div>
+    <div class="field-grid">
+      <div class="field">
+        <label>Highest Qualification <span class="req">*</span></label>
+        <select id="highestQualification">
+          <option value="">— Select —</option>
+          <option>Class 10</option><option>Class 12</option>
+          <option>Graduate</option><option>Post-Graduate</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>NCC Certification</label>
+        <select id="nccCertification">
+          <option value="None">None</option>
+          <option value="A Certificate">A Certificate</option>
+          <option value="B Certificate">B Certificate</option>
+          <option value="C Certificate">C Certificate</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Sports Achievement</label>
+        <select id="sportsAchievement">
+          <option value="None">None</option>
+          <option value="District">District Level</option>
+          <option value="State">State Level</option>
+          <option value="National">National Level</option>
+          <option value="International/Services">International / Services</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:18px; display:flex; gap:24px; flex-wrap:wrap;">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.88rem;">
+        <input type="checkbox" id="completedDuringService" style="width:18px;height:18px;accent-color:#f59e0b;" />
+        Education completed during service
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.88rem;">
+        <input type="checkbox" id="mathInClass12" style="width:18px;height:18px;accent-color:#f59e0b;" />
+        Had Maths in Class 12
+      </label>
+    </div>
+  </div>
+
+  <!-- ── Section D: Physical ── -->
+  <div class="section-card" id="sec-3">
+    <div class="section-title"><span class="icon">💪</span> Section D — Physical Compliance</div>
+    <div class="field-grid cols-3">
+      <div class="field">
+        <label>Height (cm) <span class="req">*</span></label>
+        <input type="number" id="heightCm" min="100" max="250" placeholder="e.g. 172" />
+      </div>
+      <div class="field">
+        <label>Chest (cm)</label>
+        <input type="number" id="chestCm" placeholder="e.g. 80" />
+      </div>
+      <div class="field">
+        <label>Chest Expansion (cm)</label>
+        <input type="number" id="chestExpansion" placeholder="e.g. 5" />
+      </div>
+    </div>
+    <div style="margin-top:18px" class="field-grid">
+      <div class="field">
+        <label>Vision</label>
+        <input type="text" id="vision" placeholder="e.g. 6/6, corrected" />
+      </div>
+      <div class="field">
+        <label>Medical Category</label>
+        <input type="text" id="medicalCategory" placeholder="e.g. SHAPE-1" />
+      </div>
+    </div>
+    <div style="margin-top:18px">
+      <label style="display:block;margin-bottom:10px;">Physical Proficiency</label>
+      <div class="radio-group">
+        <label><input type="radio" name="physProf" value="Excellent"> Excellent</label>
+        <label><input type="radio" name="physProf" value="Good" checked> Good</label>
+        <label><input type="radio" name="physProf" value="Satisfactory"> Satisfactory</label>
+      </div>
+    </div>
+    <div style="margin-top:18px">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.88rem;">
+        <input type="checkbox" id="colourBlind" style="width:18px;height:18px;accent-color:#f59e0b;" />
+        Colour blind
+      </label>
+    </div>
+  </div>
+
+  <!-- ── Section E: Career Intent ── -->
+  <div class="section-card" id="sec-4">
+    <div class="section-title"><span class="icon">🎯</span> Section E — Civilian Career Intent</div>
+    <div style="margin-bottom:20px">
+      <label style="display:block;margin-bottom:10px;">Career Preferences <span class="req">*</span> <span class="hint">(select all that interest you)</span></label>
+      <div class="checkbox-group" id="careerPreferences">
+        <label><input type="checkbox" value="POLICE_CAPF"> Police / CAPF</label>
+        <label><input type="checkbox" value="SSC"> SSC / Govt Jobs</label>
+        <label><input type="checkbox" value="BANKING"> Banking</label>
+        <label><input type="checkbox" value="RAILWAYS"> Railways</label>
+        <label><input type="checkbox" value="ENGINEERING"> Engineering / PSU</label>
+        <label><input type="checkbox" value="TEACHING"> Teaching</label>
+        <label><input type="checkbox" value="NURSING"> Nursing / Para-medical</label>
+        <label><input type="checkbox" value="INSURANCE"> Insurance</label>
+        <label><input type="checkbox" value="OTHER"> Other Govt Services</label>
+      </div>
+    </div>
+
+    <div class="field-grid">
+      <div class="field">
+        <label>Relocation Preference</label>
+        <select id="relocation">
+          <option value="Home District">Home District only</option>
+          <option value="Home State" selected>Home State</option>
+          <option value="Anywhere in India">Anywhere in India</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>English Comfort Level</label>
+        <select id="englishComfort">
+          <option value="Basic">Basic</option>
+          <option value="Intermediate" selected>Intermediate</option>
+          <option value="Fluent">Fluent</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Section F: Sewa Nidhi ── -->
+  <div class="section-card" id="sec-5">
+    <div class="section-title"><span class="icon">🌱</span> Section F — Sewa Nidhi Interests</div>
+    <div class="hint" style="margin-bottom:14px;">Select any self-employment / vocational interests you have (optional)</div>
+    <div class="checkbox-group" id="sewaNidhiInterests">
+      <label><input type="checkbox" value="Agriculture / Farming"> Agriculture / Farming</label>
+      <label><input type="checkbox" value="Small Business / Trade"> Small Business / Trade</label>
+      <label><input type="checkbox" value="Security Agency"> Security Agency</label>
+      <label><input type="checkbox" value="Transport / Logistics"> Transport / Logistics</label>
+      <label><input type="checkbox" value="Skill Training / Coaching"> Skill Training / Coaching</label>
+      <label><input type="checkbox" value="Tourism / Hospitality"> Tourism / Hospitality</label>
+      <label><input type="checkbox" value="IT / Freelancing"> IT / Freelancing</label>
+      <label><input type="checkbox" value="Healthcare / Pharmacy"> Healthcare / Pharmacy</label>
+    </div>
+  </div>
+
+  <!-- ── Section G: Review & Submit ── -->
+  <div class="section-card" id="sec-6">
+    <div class="section-title"><span class="icon">📋</span> Section G — Review &amp; Submit</div>
+    <div id="review-summary" style="font-size:0.88rem; color:#94a3b8; line-height:1.7;"></div>
+    <div style="margin-top:22px; padding:16px; background:rgba(245,158,11,.07); border:1px solid rgba(245,158,11,.2); border-radius:10px;">
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:0.88rem;color:#cbd5e1;">
+        <input type="checkbox" id="consent" style="width:18px;height:18px;margin-top:2px;accent-color:#f59e0b;flex-shrink:0;" />
+        I confirm that all information provided is true and correct, and I consent to the processing of my data for career recommendation purposes under the VeerNXT platform.
+      </label>
+    </div>
+  </div>
+
+  <!-- Loader -->
+  <div id="loader">
+    <div class="spinner"></div>
+    <p>Analysing your profile against <strong>exam master database</strong>…</p>
+    <p style="font-size:0.8rem;color:#64748b;margin-top:8px;">Checking eligibility, scoring matches, attaching vacancies</p>
+  </div>
+
+  <!-- Results -->
+  <div id="results">
+    <div class="results-header">
+      <div>
+        <h2>🏆 Your Top Exam Recommendations</h2>
+        <p id="results-sub">Personalised based on your profile</p>
+      </div>
+      <div class="stats-row" id="stats-row"></div>
+    </div>
+    <div id="exam-cards"></div>
+    <div class="reset-row">
+      <button class="reset-btn" onclick="resetForm()">← Start Over with New Profile</button>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <div class="nav-row" id="navRow">
+    <button class="btn btn-outline" id="btnPrev" onclick="navigate(-1)" style="visibility:hidden;">← Previous</button>
+    <span id="stepCounter" style="font-size:0.8rem;color:#64748b;"></span>
+    <button class="btn btn-primary" id="btnNext" onclick="navigate(1)">Next →</button>
+  </div>
+</main>
+
+<script>
+  // ══════════════════════════════════════════════════
+  //  State
+  // ══════════════════════════════════════════════════
+  const TOTAL_STEPS = 7;
+  let currentStep = 0;
+
+  const API_BASE = 'http://localhost:4000';
+
+  // ══════════════════════════════════════════════════
+  //  Navigation
+  // ══════════════════════════════════════════════════
+  function navigate(dir) {
+    if (dir === 1 && !validateStep(currentStep)) return;
+    currentStep += dir;
+    currentStep = Math.max(0, Math.min(TOTAL_STEPS - 1, currentStep));
+    renderStep();
+    if (currentStep === TOTAL_STEPS - 1) buildReview();
+  }
+
+  function renderStep() {
+    document.querySelectorAll('.section-card').forEach((el, i) => {
+      el.classList.toggle('active', i === currentStep);
+    });
+    document.querySelectorAll('.step').forEach((el, i) => {
+      el.classList.remove('active','done');
+      if (i === currentStep) el.classList.add('active');
+      if (i < currentStep) el.classList.add('done');
+    });
+
+    const isLast = currentStep === TOTAL_STEPS - 1;
+    const isFirst = currentStep === 0;
+
+    document.getElementById('btnPrev').style.visibility = isFirst ? 'hidden' : 'visible';
+    document.getElementById('stepCounter').textContent = `Step ${currentStep + 1} of ${TOTAL_STEPS}`;
+
+    const btnNext = document.getElementById('btnNext');
+    if (isLast) {
+      btnNext.textContent = '🚀 Get My Recommendations';
+      btnNext.className = 'btn btn-submit';
+      btnNext.onclick = submitProfile;
+    } else {
+      btnNext.textContent = 'Next →';
+      btnNext.className = 'btn btn-primary';
+      btnNext.onclick = () => navigate(1);
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ══════════════════════════════════════════════════
+  //  Validation (lightweight)
+  // ══════════════════════════════════════════════════
+  function showError(msg) {
+    const b = document.getElementById('error-banner');
+    b.style.display = 'block';
+    b.textContent = '⚠️  ' + msg;
+    b.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  function clearError() {
+    document.getElementById('error-banner').style.display = 'none';
+  }
+
+  function validateStep(step) {
+    clearError();
+    if (step === 0) {
+      if (!v('fullName') || !v('dateOfBirth') || !v('category') ||
+          !v('stateOfDomicile') || !v('maritalStatus') || !v('email') || !v('mobile')) {
+        showError('Please fill all required fields in Section A.'); return false;
+      }
+    }
+    if (step === 1) {
+      if (!v('serviceBranch') || !v('armCorpsTrade') || !v('roleAppointment') ||
+          !v('totalServiceDuration') || !v('characterOnDischarge')) {
+        showError('Please fill all required fields in Section B.'); return false;
+      }
+    }
+    if (step === 2) {
+      if (!v('highestQualification')) {
+        showError('Please select your highest qualification.'); return false;
+      }
+    }
+    if (step === 3) {
+      if (!v('heightCm')) {
+        showError('Please enter your height.'); return false;
+      }
+    }
+    if (step === 4) {
+      const prefs = checkedValues('careerPreferences');
+      if (prefs.length === 0) {
+        showError('Please select at least one career preference.'); return false;
+      }
+    }
+    if (step === 6) {
+      if (!document.getElementById('consent').checked) {
+        showError('Please give your consent before submitting.'); return false;
+      }
+    }
+    return true;
+  }
+
+  function v(id) { return document.getElementById(id)?.value?.trim() || ''; }
+  function checked(id) { return document.getElementById(id)?.checked || false; }
+  function checkedValues(groupId) {
+    return [...document.querySelectorAll(`#${groupId} input[type=checkbox]:checked`)].map(el => el.value);
+  }
+  function radioValue(name) {
+    return document.querySelector(`input[name=${name}]:checked`)?.value || '';
+  }
+
+  // ══════════════════════════════════════════════════
+  //  Build review summary
+  // ══════════════════════════════════════════════════
+  function buildReview() {
+    const el = document.getElementById('review-summary');
+    el.innerHTML = `
+      <table style="width:100%;border-collapse:collapse;">
+        ${row('Name', v('fullName'))} ${row('DOB', v('dateOfBirth'))}
+        ${row('Category', v('category'))} ${row('State', v('stateOfDomicile'))}
+        ${row('Branch', v('serviceBranch'))} ${row('Trade', v('armCorpsTrade'))}
+        ${row('Service', v('totalServiceDuration'))} ${row('Character', v('characterOnDischarge'))}
+        ${row('Education', v('highestQualification'))} ${row('NCC', v('nccCertification'))}
+        ${row('Sports', v('sportsAchievement'))} ${row('Height', v('heightCm') + ' cm')}
+        ${row('Career Prefs', checkedValues('careerPreferences').join(', ') || '—')}
+        ${row('Relocation', v('relocation'))} ${row('English', v('englishComfort'))}
+        ${row('Sewa Nidhi', checkedValues('sewaNidhiInterests').join(', ') || 'None')}
+      </table>`;
+  }
+  function row(k, val) {
+    return `<tr>
+      <td style="padding:5px 10px 5px 0;color:#64748b;font-size:0.8rem;white-space:nowrap;vertical-align:top;">${k}</td>
+      <td style="padding:5px 0 5px 10px;color:#e2e8f0;font-size:0.85rem;">${val || '—'}</td>
+    </tr>`;
+  }
+
+  // ══════════════════════════════════════════════════
+  //  Build profile payload
+  // ══════════════════════════════════════════════════
+  function buildProfile() {
+    return {
+      fullName: v('fullName'),
+      dateOfBirth: v('dateOfBirth'),
+      category: v('category'),
+      stateOfDomicile: v('stateOfDomicile'),
+      district: v('district') || null,
+      maritalStatus: v('maritalStatus'),
+      email: v('email'),
+      mobile: v('mobile'),
+      serviceBranch: v('serviceBranch'),
+      armCorpsTrade: v('armCorpsTrade'),
+      roleAppointment: v('roleAppointment'),
+      totalServiceDuration: v('totalServiceDuration'),
+      militaryCourses: checkedValues('militaryCourses'),
+      characterOnDischarge: v('characterOnDischarge'),
+      specificSkills: checkedValues('specificSkills'),
+      highestQualification: v('highestQualification'),
+      completedDuringService: checked('completedDuringService'),
+      nccCertification: v('nccCertification') || 'None',
+      sportsAchievement: v('sportsAchievement') || 'None',
+      mathInClass12: checked('mathInClass12'),
+      heightCm: parseFloat(v('heightCm')) || 170,
+      chestCm: parseFloat(v('chestCm')) || null,
+      chestExpansion: parseFloat(v('chestExpansion')) || null,
+      vision: v('vision') || null,
+      colourBlind: checked('colourBlind'),
+      medicalCategory: v('medicalCategory') || 'SHAPE-1',
+      physicalProficiency: radioValue('physProf') || 'Good',
+      careerPreferences: checkedValues('careerPreferences'),
+      relocation: v('relocation') || 'Home State',
+      englishComfort: v('englishComfort') || 'Basic',
+      sewaNidhiInterests: checkedValues('sewaNidhiInterests'),
+      consent: true,
+    };
+  }
+
+  // ══════════════════════════════════════════════════
+  //  Submit
+  // ══════════════════════════════════════════════════
+  async function submitProfile() {
+    if (!validateStep(6)) return;
+    clearError();
+
+    // Show loader
+    document.querySelectorAll('.section-card').forEach(el => el.classList.remove('active'));
+    document.getElementById('navRow').style.display = 'none';
+    document.getElementById('loader').style.display = 'block';
+    document.getElementById('results').style.display = 'none';
+
+    const profile = buildProfile();
+
+    try {
+      const res = await fetch(`${API_BASE}/api/recommend?live=false`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(profile),
+      });
+      const data = await res.json();
+      if (!data.ok) throw new Error((data.errors || []).map(e => e.message).join('; ') || data.error || 'Unknown error');
+      renderResults(data);
+    } catch (err) {
+      document.getElementById('loader').style.display = 'none';
+      document.getElementById('sec-6').classList.add('active');
+      document.getElementById('navRow').style.display = 'flex';
+      showError('API Error: ' + err.message + '. Make sure the server is running on localhost:4000.');
+    }
+  }
+
+  // ══════════════════════════════════════════════════
+  //  Render results
+  // ══════════════════════════════════════════════════
+  const TRACK_LABELS = {
+    POLICE_CAPF: 'Police / CAPF',
+    SSC: 'SSC',
+    BANKING: 'Banking',
+    RAILWAYS: 'Railways',
+    ENGINEERING: 'Engineering',
+    TEACHING: 'Teaching',
+    NURSING: 'Nursing',
+    INSURANCE: 'Insurance',
+    OTHER: 'Other Govt',
+    PSU: 'PSU',
+  };
+
+  function renderResults(data) {
+    document.getElementById('loader').style.display = 'none';
+    document.getElementById('results').style.display = 'block';
+
+    document.getElementById('results-sub').textContent =
+      `Profile: ${data.profileSummary || ''} — ${data.totalEligible} exams eligible out of total database`;
+
+    const sr = document.getElementById('stats-row');
+    sr.innerHTML = `
+      <div class="stat-chip">✅ ${data.totalEligible} Eligible</div>
+      <div class="stat-chip">❌ ${data.totalRejected} Filtered</div>
+      <div class="stat-chip">🏆 Top ${data.recommendations.length} Shown</div>`;
+
+    const container = document.getElementById('exam-cards');
+    container.innerHTML = '';
+
+    data.recommendations.forEach((rec, idx) => {
+      const rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : 'rank-other';
+      const bk = rec.breakdown || {};
+
+      // Score bars
+      const maxScore = data.recommendations[0]?.score || 100;
+      const barRows = Object.entries(bk).map(([key, val]) => `
+        <div class="breakdown-row">
+          <div class="breakdown-label">${formatKey(key)}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${Math.max(0, Math.min(100, (val/maxScore)*100*5))}%"></div></div>
+          <div class="breakdown-val">${typeof val === 'number' ? val.toFixed(1) : val}</div>
+        </div>`).join('');
+
+      const flags = rec.eligibilityFlags || {};
+      const tagHtml = [
+        `<span class="tag tag-track">${TRACK_LABELS[rec.career_track] || rec.career_track}</span>`,
+        rec.level ? `<span class="tag tag-level">${rec.level}</span>` : '',
+        rec.state_ut ? `<span class="tag tag-state">${rec.state_ut}</span>` : '',
+        flags.ex_servicemen_quota ? `<span class="tag tag-esm">ESM Quota</span>` : '',
+        flags.ncc_bonus ? `<span class="tag tag-ncc">NCC Bonus</span>` : '',
+      ].join('');
+
+      const websiteLink = rec.website
+        ? `<a class="website-link" href="${rec.website}" target="_blank">🔗 Official Website ↗</a>`
+        : '';
+
+      const card = document.createElement('div');
+      card.className = `exam-card ${rankClass}`;
+      card.innerHTML = `
+        <div class="card-top">
+          <div class="rank-badge">${rec.rank}</div>
+          <div class="card-info">
+            <h3>${rec.exam_name}</h3>
+            <div class="body">${rec.conducting_body || ''}</div>
+            <div class="tags">${tagHtml}</div>
+            ${websiteLink}
+          </div>
+          <div class="score-col">
+            <div class="score-val">${rec.score}</div>
+            <div class="score-lbl">Match Score</div>
+          </div>
+        </div>
+        ${barRows ? `<div class="breakdown">${barRows}</div>` : ''}`;
+      container.appendChild(card);
+    });
+  }
+
+  function formatKey(k) {
+    return k.replace(/_/g,' ').replace(/([A-Z])/g,' $1')
+      .toLowerCase().replace(/^./, c => c.toUpperCase());
+  }
+
+  // ══════════════════════════════════════════════════
+  //  Reset
+  // ══════════════════════════════════════════════════
+  function resetForm() {
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('navRow').style.display = 'flex';
+    currentStep = 0;
+    renderStep();
+    document.querySelectorAll('input[type=text], input[type=email], input[type=tel], input[type=number], input[type=date]')
+      .forEach(el => el.value = '');
+    document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
+    document.querySelectorAll('input[type=checkbox]').forEach(el => el.checked = false);
+  }
+
+  // ══════════════════════════════════════════════════
+  //  Init
+  // ══════════════════════════════════════════════════
+  renderStep();
+</script>
+</body>
+</html>

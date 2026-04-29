@@ -1,0 +1,324 @@
+openapi: 3.0.3
+info:
+  title: VeerNXT Agniveer Career Profiling Engine API
+  version: 1.0.0
+  description: |
+    REST API exposed by the VeerNXT Profiling Engine. Your existing Node.js
+    website backend calls these endpoints (or imports the engine as a library).
+    Returns top-10 government/PSU/banking exam recommendations per Agniveer
+    profile, enriched with live vacancy/notification data scraped from official
+    government websites.
+  contact:
+    name: VeerNXT
+    url: https://veernxt.in
+servers:
+  - url: https://api.veernxt.in/engine/v1
+    description: Production
+  - url: http://localhost:4000
+    description: Local development
+
+tags:
+  - name: Recommendations
+  - name: Exams
+  - name: Admin
+
+paths:
+  /api/validate:
+    post:
+      tags: [Recommendations]
+      summary: Validate a profile payload without scoring
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Profile' }
+      responses:
+        '200':
+          description: Valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:      { type: boolean, example: true }
+                  profile: { $ref: '#/components/schemas/Profile' }
+        '400':
+          description: Validation errors
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ValidationError' }
+
+  /api/recommend:
+    post:
+      tags: [Recommendations]
+      summary: Top-10 career exam recommendations for an Agniveer
+      parameters:
+        - in: query
+          name: topN
+          schema: { type: integer, default: 10, minimum: 1, maximum: 50 }
+        - in: query
+          name: live
+          schema: { type: boolean, default: true }
+          description: Set to false to skip live vacancy scraping (faster, offline-safe)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Profile'
+                - type: object
+                  properties:
+                    priorityTracks:
+                      type: array
+                      items: { type: string }
+                      example: [POLICE_CAPF, SSC, BANKING, RAILWAYS]
+      responses:
+        '200':
+          description: Recommendations generated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RecommendationResponse' }
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ValidationError' }
+        '500':
+          description: Server error
+
+  /api/exams:
+    get:
+      tags: [Exams]
+      summary: List all exams (optionally filter by track/state)
+      parameters:
+        - in: query
+          name: track
+          schema: { type: string, example: POLICE_CAPF }
+        - in: query
+          name: state
+          schema: { type: string, example: Uttar Pradesh }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count: { type: integer }
+                  exams:
+                    type: array
+                    items: { $ref: '#/components/schemas/Exam' }
+
+  /api/exams/{id}:
+    get:
+      tags: [Exams]
+      summary: Single exam with live vacancy snapshot
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:            { type: boolean }
+                  exam:          { $ref: '#/components/schemas/Exam' }
+                  liveVacancies: { $ref: '#/components/schemas/LiveVacancies' }
+        '404':
+          description: Not found
+
+  /api/refresh-vacancies:
+    post:
+      tags: [Admin]
+      summary: Force re-scrape of every exam's official site
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Refreshed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:        { type: boolean }
+                  refreshed: { type: integer, example: 1629 }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Profile:
+      type: object
+      required:
+        - fullName
+        - dateOfBirth
+        - category
+        - stateOfDomicile
+        - maritalStatus
+        - email
+        - mobile
+        - serviceBranch
+        - armCorpsTrade
+        - roleAppointment
+        - totalServiceDuration
+        - characterOnDischarge
+        - highestQualification
+        - heightCm
+        - careerPreferences
+        - consent
+      properties:
+        fullName:              { type: string, example: "Rohan Yadav" }
+        dateOfBirth:           { type: string, format: date, example: "2003-06-15" }
+        category:              { type: string, enum: [General, OBC, SC, ST, EWS] }
+        stateOfDomicile:       { type: string, example: "Uttar Pradesh" }
+        district:              { type: string, example: "Kanpur" }
+        maritalStatus:         { type: string, enum: [Single, Married] }
+        email:                 { type: string, format: email }
+        mobile:                { type: string, example: "9876543210" }
+        serviceBranch:         { type: string, enum: [Indian Army, Indian Navy, Indian Air Force] }
+        armCorpsTrade:         { type: string, example: "Infantry" }
+        roleAppointment:       { type: string, example: "Rifleman (General Duty)" }
+        totalServiceDuration:  { type: string, example: "4 years 0 months" }
+        militaryCourses:       { type: array, items: { type: string } }
+        characterOnDischarge:  { type: string, enum: [Exemplary, 'Very Good', Good] }
+        specificSkills:        { type: array, items: { type: string } }
+        highestQualification:  { type: string, enum: [Class 10, Class 12, Graduate, Post-Graduate] }
+        completedDuringService: { type: boolean, default: false }
+        nccCertification:      { type: string, enum: [None, A Certificate, B Certificate, C Certificate], default: None }
+        sportsAchievement:     { type: string, enum: [None, District, State, National, International/Services], default: None }
+        mathInClass12:         { type: boolean, default: false }
+        heightCm:              { type: number, example: 172 }
+        chestCm:               { type: number, example: 84 }
+        chestExpansion:        { type: number, example: 5 }
+        vision:                { type: string, example: "6/6 without glasses" }
+        colourBlind:           { type: boolean, default: false }
+        medicalCategory:       { type: string, default: SHAPE-1 }
+        physicalProficiency:   { type: string, enum: [Excellent, Good, Satisfactory], default: Good }
+        careerPreferences:
+          type: array
+          minItems: 1
+          items: { type: string }
+          example: ["Central Govt (CAPF, SSC, Railways, Banking, etc)", "State Govt (Police, Revenue, Secretariat, etc)"]
+        relocation:            { type: string, enum: [Home District, Home State, Anywhere in India], default: Home State }
+        englishComfort:        { type: string, enum: [Basic, Intermediate, Fluent], default: Basic }
+        sewaNidhiInterests:    { type: array, items: { type: string } }
+        consent:               { type: boolean, example: true }
+
+    RecommendationResponse:
+      type: object
+      properties:
+        ok:              { type: boolean }
+        profileSummary:
+          type: object
+          properties:
+            name:          { type: string }
+            branch:        { type: string }
+            trade:         { type: string }
+            qualification: { type: string }
+            domicile:      { type: string }
+            character:     { type: string }
+            preferences:   { type: array, items: { type: string } }
+        totalEligible:   { type: integer, example: 1135 }
+        totalRejected:   { type: integer, example: 494 }
+        recommendations:
+          type: array
+          items: { $ref: '#/components/schemas/Recommendation' }
+
+    Recommendation:
+      type: object
+      properties:
+        rank:            { type: integer, example: 1 }
+        exam_id:         { type: string,  example: "S-9d2c4f81b3" }
+        exam_name:       { type: string,  example: "UP Jail Warder" }
+        conducting_body: { type: string,  example: "UP Police Recruitment Board" }
+        level:           { type: string,  enum: [central, state, ut] }
+        state_ut:        { type: string,  nullable: true }
+        career_track:    { type: string,  example: "POLICE_CAPF" }
+        website:         { type: string,  format: uri }
+        score:           { type: number,  example: 162.0 }
+        breakdown:
+          type: object
+          additionalProperties: { type: number }
+          example:
+            ex_servicemen_quota: 25
+            priority_track: 15
+            preference_central_govt: 20
+            domicile_home: 18
+        eligibilityFlags:
+          type: object
+          properties:
+            ex_servicemen_quota:  { type: boolean }
+            ncc_bonus:            { type: boolean }
+            physical_required:    { type: boolean }
+            min_qualification:    { type: string, nullable: true }
+            domicile_required:    { type: boolean }
+        liveVacancies: { $ref: '#/components/schemas/LiveVacancies' }
+
+    Exam:
+      type: object
+      properties:
+        exam_id:               { type: string }
+        level:                 { type: string, enum: [central, state, ut] }
+        state_ut:              { type: string, nullable: true }
+        career_track:          { type: string }
+        raw_category:          { type: string }
+        conducting_body:       { type: string }
+        exam_name:             { type: string }
+        website:               { type: string }
+        min_qualification:     { type: string, nullable: true }
+        physical_required:     { type: boolean }
+        math_required:         { type: boolean }
+        technical_trade_preferred: { type: boolean }
+        ncc_bonus:             { type: boolean }
+        sports_quota_eligible: { type: boolean }
+        ex_servicemen_quota:   { type: boolean }
+        domicile_required:     { type: boolean }
+        english_intensive:     { type: boolean }
+
+    LiveVacancies:
+      type: object
+      properties:
+        source:    { type: string, example: "ssc.gov.in" }
+        fetchedAt: { type: string, format: date-time }
+        notifications:
+          type: array
+          items:
+            type: object
+            properties:
+              title:       { type: string }
+              url:         { type: string, format: uri }
+              publishedOn: { type: string, format: date, nullable: true }
+              vacancies:   { type: integer, nullable: true }
+              ageRange:
+                type: object
+                nullable: true
+                properties:
+                  min: { type: integer }
+                  max: { type: integer }
+              lastDate:    { type: string, format: date, nullable: true }
+              notes:       { type: string }
+
+    ValidationError:
+      type: object
+      properties:
+        ok:     { type: boolean, example: false }
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              message: { type: string }
+              path:    { type: array, items: { type: string } }
+              type:    { type: string }
