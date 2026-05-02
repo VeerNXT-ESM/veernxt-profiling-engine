@@ -10,6 +10,7 @@
  */
 
 const express = require('express');
+const cors    = require('cors');
 const cron    = require('node-cron');
 const fs      = require('fs');
 const path    = require('path');
@@ -19,6 +20,7 @@ const { recommendTopExams, loadExamMaster } = require('./engine/recommend');
 const liveVacancies       = require('./scrapers/index');
 
 const app = express();
+app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 
 app.get('/', (_req, res) => res.json({
