@@ -1,35 +1,34 @@
 /**
  * Scraper for Staff Selection Commission notifications.
  *   Landing page: https://ssc.gov.in/  → "Notices" / "Notifications" section
- *
- * SSC periodically publishes per-exam notices. We read the homepage notice list
- * and filter those whose title matches the exam.exam_name keywords.
+ * 
+ * Updated to use SSC API for SPA compatibility.
  */
 
-const { fetchHTML, normalise } = require('./_base');
+const { fetchJSON, normalise } = require('./_base');
 
-const HOME = 'https://ssc.gov.in/';
-const NOTICE_BOARD = 'https://ssc.gov.in/notice-board';
+const API_ENDPOINT = 'https://ssc.gov.in/api/general-website/portal/records?page=1&limit=20&contentType=notice-boards&key=createdAt&order=DESC&pageType=filter&isAttachment=true&attributes=id,headline,examId,contentType,redirectUrl,startDate,endDate,language,createdAt&queryKey=startDate,endDate&customKey=createdAt&exams=false&date=false&language=english';
 
 async function fetch(exam) {
   try {
-    const $ = await fetchHTML(NOTICE_BOARD);
+    const response = await fetchJSON(API_ENDPOINT);
+    const records = response.data || [];
+    
     const rows = [];
-    $('a').each((_, el) => {
-      const title = $(el).text().trim();
-      const href  = $(el).attr('href') || '';
-      if (!title || !href.toLowerCase().endsWith('.pdf') && !/notice|notification/i.test(title)) return;
+    records.forEach(item => {
+      const title = item.headline || '';
       if (matches(exam, title)) {
         rows.push({
           title,
-          url: new URL(href, HOME).toString(),
-          publishedOn: null,   // SSC lists dates in adjacent cells; parser TBD
+          url: item.redirectUrl || `https://ssc.gov.in/portal/records/attachment/${item.id}`,
+          publishedOn: item.createdAt || item.startDate,
           vacancies: null,
           ageRange: null,
-          lastDate: null,
+          lastDate: item.endDate || null,
         });
       }
     });
+    
     return normalise(rows.slice(0, 5), 'ssc.gov.in');
   } catch (e) {
     return normalise([], 'ssc.gov.in (fetch failed: ' + e.message + ')');

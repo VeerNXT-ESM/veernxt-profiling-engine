@@ -27,6 +27,24 @@ async function fetchHTML(url, { retries = 2, timeoutMs = 15000 } = {}) {
   throw lastErr;
 }
 
+async function fetchJSON(url, { retries = 2, timeoutMs = 15000 } = {}) {
+  let lastErr;
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const { data } = await axios.get(url, {
+        timeout: timeoutMs,
+        headers: { 'User-Agent': UA, 'Accept': 'application/json' },
+        maxRedirects: 5,
+      });
+      return data;
+    } catch (e) {
+      lastErr = e;
+      await new Promise(r => setTimeout(r, 1000 * (i + 1)));
+    }
+  }
+  throw lastErr;
+}
+
 function normalise(notifications = [], source = '') {
   return {
     source,
@@ -43,4 +61,4 @@ function normalise(notifications = [], source = '') {
   };
 }
 
-module.exports = { fetchHTML, normalise };
+module.exports = { fetchHTML, fetchJSON, normalise };
