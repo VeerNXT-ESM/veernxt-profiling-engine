@@ -1,0 +1,212 @@
+[
+  {
+    "user": "vv",
+    "eligible": 361,
+    "top_recommendations": [
+      {
+        "exam": "Constable (Executive)",
+        "score": 131,
+        "track": "POLICE_CAPF"
+      },
+      {
+        "exam": "Constable (Driver)",
+        "score": 131,
+        "track": "POLICE_CAPF"
+      },
+      {
+        "exam": "Head Constable (Ministerial)",
+        "score": 131,
+        "track": "POLICE_CAPF"
+      }
+    ]
+  },
+  {
+    "user": "Amit Kumar",
+    "eligible": 491,
+    "top_recommendations": [
+      {
+        "exam": "RSMSSB LDC",
+        "score": 136,
+        "track": "POLICE_CAPF"
+      },
+      {
+        "exam": "RSMSSB Stenographer",
+        "score": 136,
+        "track": "POLICE_CAPF"
+      },
+      {
+        "exam": "RSMSSB Driver",
+        "score": 136,
+        "track": "POLICE_CAPF"
+      }
+    ]
+  },
+  {
+    "user": "Akshay Kumar Jaswal",
+    "eligible": 363,
+    "top_recommendations": [
+      {
+        "exam": "HPSSSB Clerk",
+        "score": 135,
+        "track": "POLICE_CAPF"
+      },
+      {
+        "exam": "HPSSSB JBT Teacher",
+        "score": 130,
+        "track": "POLICE_CAPF"
+      },
+      {
+        "exam": "HPSSSB TGT",
+        "score": 130,
+        "track": "POLICE_CAPF"
+      }
+    ]
+  },
+  {
+    "user": "Honey Singh",
+    "eligible": 473,
+    "top_recommendations": [
+      {
+        "exam": "UP Jail Warder",
+        "score": 129,
+        "track": "POLICE_CAPF"
+      },
+      {
+        "exam": "UPPSC DSP",
+        "score": 121,
+        "track": "POLICE_CAPF"
+      },
+      {
+        "exam": "UP Police SI",
+        "score": 118,
+        "track": "POLICE_CAPF"
+      }
+    ]
+  },
+  {
+    "user": "Mohit Kumar harinkhede",
+    "eligible": 362,
+    "top_recommendations": [
+      {
+        "exam": "SSB Constable",
+        "score": 140,
+        "track": "POLICE_CAPF"
+      },
+      {
+        "exam": "Constable",
+        "score": 140,
+        "track": "POLICE_CAPF"
+      },
+      {
+        "exam": "Constable",
+        "score": 140,
+        "track": "POLICE_CAPF"
+      }
+    ]
+  },
+  {
+    "user": "Subhojit mondal",
+    "eligible": 356,
+    "top_recommendations": [
+      {
+        "exam": "SSB Constable",
+        "score": 118,
+        "track": "POLICE_CAPF"
+      },
+      {
+        "exam": "Constable",
+        "score": 118,
+        "track": "POLICE_CAPF"
+      },
+      {
+        "exam": "Constable",
+        "score": 118,
+        "track": "POLICE_CAPF"
+      }
+    ]
+  },
+  {
+    "user": "Teela Suresh",
+    "eligible": 310,
+    "top_recommendations": [
+      {
+        "exam": "RPF Constable",
+        "score": 94,
+        "track": "RAILWAYS"
+      },
+      {
+        "exam": "SSC GD Constable (General Duty)",
+        "score": 84,
+        "track": "SSC"
+      },
+      {
+        "exam": "SSC Constable (Tradesman)",
+        "score": 84,
+        "track": "SSC"
+      }
+    ]
+  },
+  {
+    "user": "Abu Taleab khan",
+    "eligible": 365,
+    "top_recommendations": [
+      {
+        "exam": "Assam Jail Warder",
+        "score": 129,
+        "track": "POLICE_CAPF"
+      },
+      {
+        "exam": "APSC DSP",
+        "score": 121,
+        "track": "POLICE_CAPF"
+      },
+      {
+        "exam": "ABUB (Armed Branch UB)",
+        "score": 121,
+        "track": "POLICE_CAPF"
+      }
+    ]
+  },
+  {
+    "user": "Pawan Kumar",
+    "eligible": 473,
+    "top_recommendations": [
+      {
+        "exam": "UP Jail Warder",
+        "score": 132,
+        "track": "POLICE_CAPF"
+      },
+      {
+        "exam": "UP Police SI",
+        "score": 131,
+        "track": "POLICE_CAPF"
+      },
+      {
+        "exam": "UP Police Constable",
+        "score": 131,
+        "track": "POLICE_CAPF"
+      }
+    ]
+  },
+  {
+    "user": "Dhiraj Kumar yadav",
+    "eligible": 356,
+    "top_recommendations": [
+      {
+        "exam": "SSB Constable",
+        "score": 114,
+        "track": "POLICE_CAPF"
+      },
+      {
+        "exam": "Constable",
+        "score": 114,
+        "track": "POLICE_CAPF"
+      },
+      {
+        "exam": "Constable",
+        "score": 114,
+        "track": "POLICE_CAPF"
+      }
+    ]
+  }
+]

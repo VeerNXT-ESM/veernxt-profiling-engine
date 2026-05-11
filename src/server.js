@@ -6,6 +6,8 @@
  *   POST /api/validate         → validate profile payload
  *   GET  /api/exams            → list all exams
  *   GET  /api/exams/:id        → single exam detail + live vacancies
+ *   GET  /api/jobs             → list all scraped notifications from history
+ *   POST /api/jobs/refresh     → trigger manual scrape of core job boards
  *   POST /api/refresh-vacancies (admin) → trigger re-scrape
  */
 
@@ -18,6 +20,9 @@ const path    = require('path');
 const { profileSchema }   = require('./validators/profileSchema');
 const { recommendTopExams, loadExamMaster } = require('./engine/recommend');
 const liveVacancies       = require('./scrapers/index');
+
+const HISTORY_PATH = path.resolve(__dirname, '../data/scraped_history.json');
+const MASTER_PATH = path.resolve(__dirname, '../data/exam_master.json');
 
 const app = express();
 app.use(cors());
@@ -67,6 +72,76 @@ app.get('/api/exams/:id', async (req, res) => {
   if (!exam) return res.status(404).json({ ok: false, error: 'exam not found' });
   const live = await liveVacancies.getVacanciesFor(exam);
   res.json({ ok: true, exam, liveVacancies: live });
+});
+
+app.get('/api/jobs', (req, res) => {
+  if (!fs.existsSync(HISTORY_PATH)) {
+    return res.json({ ok: true, jobs: [] });
+  }
+  try {
+    const history = JSON.parse(fs.readFileSync(HISTORY_PATH, 'utf-8'));
+    const flatJobs = [];
+    Object.keys(history).forEach(body => {
+      history[body].forEach(job => {
+        flatJobs.push({ ...job, body });
+      });
+    });
+    // Sort by publishedOn descending
+    flatJobs.sort((a, b) => new Date(b.publishedOn || 0) - new Date(a.publishedOn || 0));
+    res.json({ ok: true, count: flatJobs.length, jobs: flatJobs });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+app.post('/api/jobs/refresh', async (req, res) => {
+  try {
+    const checkAll = req.query.all === 'true';
+    const master = loadExamMaster();
+    const exams = master.exams;
+    
+    let history = {};
+    if (fs.existsSync(HISTORY_PATH)) {
+      history = JSON.parse(fs.readFileSync(HISTORY_PATH, 'utf-8'));
+    }
+
+    const CORE_KEYWORDS = ['staff selection', 'ibps', 'railway', 'upsc', 'crpf', 'bsf', 'cisf', 'itbp', 'ssb', 'public service commission', 'police'];
+    let bodies = [...new Set(exams.map(e => e.conducting_body))].filter(Boolean);
+    
+    if (!checkAll) {
+      bodies = bodies.filter(body => 
+        CORE_KEYWORDS.some(k => body.toLowerCase().includes(k))
+      );
+    }
+
+    const newHistory = { ...history };
+    const newEntries = [];
+
+    // Run sequentially for stability in small environments
+    for (const body of bodies) {
+      const exampleExam = exams.find(e => e.conducting_body === body);
+      try {
+        const fetchResult = await liveVacancies.getVacanciesFor(exampleExam);
+        const prevEntries = history[body] || [];
+        const currentEntries = fetchResult.notifications || [];
+        
+        const seen = new Set(prevEntries.map(e => `${e.title}|${e.url}`));
+        const fresh = currentEntries.filter(e => !seen.has(`${e.title}|${e.url}`));
+        
+        if (fresh.length > 0) {
+          fresh.forEach(f => newEntries.push({ body, ...f }));
+        }
+        newHistory[body] = currentEntries;
+      } catch (err) {
+        console.error(`Scrape failed for ${body}:`, err.message);
+      }
+    }
+
+    fs.writeFileSync(HISTORY_PATH, JSON.stringify(newHistory, null, 2));
+    res.json({ ok: true, newEntriesCount: newEntries.length, newEntries });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
 });
 
 app.post('/api/refresh-vacancies', async (_req, res) => {
