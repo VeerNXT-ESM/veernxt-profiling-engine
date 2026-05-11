@@ -25,7 +25,11 @@ const HISTORY_PATH = path.resolve(__dirname, '../data/scraped_history.json');
 const MASTER_PATH = path.resolve(__dirname, '../data/exam_master.json');
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: ['https://www.veernxt.in', 'https://veernxt.in', 'https://app.veernxt.in'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'apikey']
+}));
 app.use(express.json({ limit: '1mb' }));
 
 app.get('/', (_req, res) => res.json({
