@@ -25,12 +25,24 @@ const HISTORY_PATH = path.resolve(__dirname, '../data/scraped_history.json');
 const MASTER_PATH = path.resolve(__dirname, '../data/exam_master.json');
 
 const app = express();
+
+// Enable CORS for all routes with explicit preflight handling
 app.use(cors({
-  origin: ['https://www.veernxt.in', 'https://veernxt.in', 'https://app.veernxt.in'],
+  origin: true, // Reflect the request origin
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'apikey']
+  allowedHeaders: ['Content-Type', 'Authorization', 'apikey'],
+  credentials: true
 }));
+
+app.options('*', cors()); // Handle preflight for all routes
+
 app.use(express.json({ limit: '1mb' }));
+
+// Logging middleware
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url} - Origin: ${req.headers.origin}`);
+  next();
+});
 
 app.get('/', (_req, res) => res.json({
   name: 'VeerNXT Career Profiling Engine',
@@ -164,6 +176,12 @@ cron.schedule('0 */6 * * *', async () => {
   } catch (e) {
     console.error('[cron] Refresh failed:', e.message);
   }
+});
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error('Unhandled Error:', err);
+  res.status(500).json({ ok: false, error: 'Internal Server Error' });
 });
 
 const PORT = process.env.PORT || 4000;
