@@ -7064,6 +7064,36 @@
         },
         {
           "rank": 6,
+          "exam_id": "S-7711227b31",
+          "exam_name": "Odisha GDS (Gramin Dak Sevak)",
+          "conducting_body": "Odisha Postal Circle",
+          "level": "state",
+          "state_ut": "Odisha",
+          "career_track": "POSTAL",
+          "website": "indiapost.gov.in",
+          "score": 111,
+          "breakdown": {
+            "ex_servicemen_quota": 25,
+            "preference_central_govt": 20,
+            "trade_strong_match": 20,
+            "qualification_exact": 15,
+            "category_reservation": 3,
+            "character_general": 5,
+            "english": 8,
+            "physical_fit": 10,
+            "full_term": 5
+          },
+          "eligibilityFlags": {
+            "ex_servicemen_quota": true,
+            "ncc_bonus": false,
+            "physical_required": true,
+            "min_qualification": "12",
+            "domicile_required": true
+          },
+          "relevantNotices": []
+        },
+        {
+          "rank": 7,
           "exam_id": "C-12b48ae1eb",
           "exam_name": "SSC GD Constable (General Duty)",
           "conducting_body": "Staff Selection Commission",
@@ -7113,7 +7143,7 @@
           ]
         },
         {
-          "rank": 7,
+          "rank": 8,
           "exam_id": "C-c13345c325",
           "exam_name": "SSC Constable (Tradesman)",
           "conducting_body": "Staff Selection Commission",
@@ -7163,7 +7193,7 @@
           ]
         },
         {
-          "rank": 8,
+          "rank": 9,
           "exam_id": "C-fb70a01723",
           "exam_name": "ONGC Recruitment",
           "conducting_body": "Oil and Natural Gas Corporation (ONGC)",
@@ -7192,7 +7222,7 @@
           "relevantNotices": []
         },
         {
-          "rank": 9,
+          "rank": 10,
           "exam_id": "C-2a756cbe51",
           "exam_name": "BHEL Recruitment",
           "conducting_body": "Bharat Heavy Electricals Limited (BHEL)",
@@ -7200,35 +7230,6 @@
           "state_ut": null,
           "career_track": "PSU",
           "website": "https://careers.bhel.in",
-          "score": 97,
-          "breakdown": {
-            "priority_track": 15,
-            "preference_central_govt": 20,
-            "preference_banking_psu": 16,
-            "trade_strong_match": 20,
-            "category_reservation": 3,
-            "character_required_track": 10,
-            "english": 8,
-            "full_term": 5
-          },
-          "eligibilityFlags": {
-            "ex_servicemen_quota": false,
-            "ncc_bonus": false,
-            "physical_required": false,
-            "min_qualification": null,
-            "domicile_required": false
-          },
-          "relevantNotices": []
-        },
-        {
-          "rank": 10,
-          "exam_id": "C-7d3fe38afe",
-          "exam_name": "BPCL Recruitment",
-          "conducting_body": "Bharat Petroleum Corporation Limited (BPCL)",
-          "level": "central",
-          "state_ut": null,
-          "career_track": "PSU",
-          "website": "https://www.bharatpetroleum.in/Careers.aspx",
           "score": 97,
           "breakdown": {
             "priority_track": 15,
@@ -7262,7 +7263,7 @@
           "thumbnail_url": "https://jtcyeufhvpieyngracpo.supabase.co/storage/v1/object/public/thumbnails/thumb_354c0ac35794.png",
           "is_freemium": false,
           "is_locked": true,
-          "matchScore": 473.5,
+          "matchScore": 458.5,
           "matchedExams": [
             "APSSB Driver",
             "RSMSSB Driver",
@@ -7283,7 +7284,7 @@
           "thumbnail_url": "https://jtcyeufhvpieyngracpo.supabase.co/storage/v1/object/public/thumbnails/thumb_ad45132fa8eb.png",
           "is_freemium": false,
           "is_locked": true,
-          "matchScore": 429.5,
+          "matchScore": 422.5,
           "matchedExams": [
             "APSSB Driver",
             "RSMSSB Driver",
@@ -7301,7 +7302,7 @@
           "thumbnail_url": "https://jtcyeufhvpieyngracpo.supabase.co/storage/v1/object/public/thumbnails/thumb_058f5fd633b4.png",
           "is_freemium": false,
           "is_locked": true,
-          "matchScore": 417.5,
+          "matchScore": 402.5,
           "matchedExams": [
             "APSSB Driver",
             "RSMSSB Driver",
@@ -7321,7 +7322,7 @@
           "thumbnail_url": "https://jtcyeufhvpieyngracpo.supabase.co/storage/v1/object/public/thumbnails/thumb_8fbe9ed4f4d0.png",
           "is_freemium": false,
           "is_locked": true,
-          "matchScore": 417.5,
+          "matchScore": 402.5,
           "matchedExams": [
             "APSSB Driver",
             "RSMSSB Driver",
@@ -12745,6 +12746,32 @@
         },
         {
           "rank": 9,
+          "exam_id": "S-f83edf4e0c",
+          "exam_name": "UKSSSC Junior Assistant",
+          "conducting_body": "",
+          "level": "state",
+          "state_ut": "Uttarakhand",
+          "career_track": "ADMINISTRATIVE",
+          "website": "",
+          "score": 56,
+          "breakdown": {
+            "preference_state_govt": 18,
+            "trade_soft_match": 10,
+            "domicile_home": 18,
+            "character_general": 5,
+            "full_term": 5
+          },
+          "eligibilityFlags": {
+            "ex_servicemen_quota": false,
+            "ncc_bonus": false,
+            "physical_required": false,
+            "min_qualification": null,
+            "domicile_required": true
+          },
+          "relevantNotices": []
+        },
+        {
+          "rank": 10,
           "exam_id": "S-5acaf111ba",
           "exam_name": "UKSSSC Group C/D (Peon/MTS)",
           "conducting_body": "UKSSSC",
@@ -12768,51 +12795,6 @@
             "domicile_required": true
           },
           "relevantNotices": []
-        },
-        {
-          "rank": 10,
-          "exam_id": "C-574d89345e",
-          "exam_name": "Railways Group D",
-          "conducting_body": "RRB (Railway Recruitment Board)",
-          "level": "central",
-          "state_ut": null,
-          "career_track": "RAILWAYS",
-          "website": "https://rrbapply.gov.in",
-          "score": 53,
-          "breakdown": {
-            "priority_track": 15,
-            "trade_strong_match": 20,
-            "qualification_over": 8,
-            "character_general": 5,
-            "full_term": 5
-          },
-          "eligibilityFlags": {
-            "ex_servicemen_quota": false,
-            "ncc_bonus": false,
-            "physical_required": false,
-            "min_qualification": "10",
-            "domicile_required": false
-          },
-          "relevantNotices": [
-            {
-              "title": "रेलवे भर्ती बोर्ड, चंडीगढ़Railway Recruitment Board, Chandigarh",
-              "url": "https://www.rrbcdg.gov.in/index.php",
-              "publishedOn": null,
-              "vacancies": null,
-              "ageRange": null,
-              "lastDate": null,
-              "notes": ""
-            },
-            {
-              "title": "Recruitment Notices",
-              "url": "https://www.rrbcdg.gov.in/employment-notices.php",
-              "publishedOn": null,
-              "vacancies": null,
-              "ageRange": null,
-              "lastDate": null,
-              "notes": ""
-            }
-          ]
         }
       ],
       "matchedResources": [
@@ -12827,11 +12809,12 @@
           "thumbnail_url": "https://jtcyeufhvpieyngracpo.supabase.co/storage/v1/object/public/thumbnails/thumb_da0bff8e26ae.png",
           "is_freemium": true,
           "is_locked": false,
-          "matchScore": 450,
+          "matchScore": 470,
           "matchedExams": [
             "Constable",
             "RPF Constable",
-            "UKSSSC Stenographer"
+            "UKSSSC Stenographer",
+            "UKSSSC Junior Assistant"
           ]
         },
         {
@@ -12845,12 +12828,13 @@
           "thumbnail_url": "https://jtcyeufhvpieyngracpo.supabase.co/storage/v1/object/public/thumbnails/thumb_354c0ac35794.png",
           "is_freemium": false,
           "is_locked": true,
-          "matchScore": 423,
+          "matchScore": 440,
           "matchedExams": [
             "Constable",
             "SSC GD Constable (General Duty)",
             "SSC Constable (Tradesman)",
-            "UKSSSC Stenographer"
+            "UKSSSC Stenographer",
+            "UKSSSC Junior Assistant"
           ]
         },
         {
@@ -12864,12 +12848,13 @@
           "thumbnail_url": "https://jtcyeufhvpieyngracpo.supabase.co/storage/v1/object/public/thumbnails/thumb_2ae27f39fbd6.png",
           "is_freemium": true,
           "is_locked": false,
-          "matchScore": 402,
+          "matchScore": 422,
           "matchedExams": [
             "Constable",
             "SSC GD Constable (General Duty)",
             "SSC Constable (Tradesman)",
-            "UKSSSC Stenographer"
+            "UKSSSC Stenographer",
+            "UKSSSC Junior Assistant"
           ]
         },
         {
@@ -12883,12 +12868,13 @@
           "thumbnail_url": "https://jtcyeufhvpieyngracpo.supabase.co/storage/v1/object/public/thumbnails/thumb_d33b5395d9af.png",
           "is_freemium": true,
           "is_locked": false,
-          "matchScore": 298,
+          "matchScore": 318,
           "matchedExams": [
             "Constable",
             "SSC GD Constable (General Duty)",
             "SSC Constable (Tradesman)",
-            "UKSSSC Stenographer"
+            "UKSSSC Stenographer",
+            "UKSSSC Junior Assistant"
           ]
         },
         {
@@ -12902,12 +12888,13 @@
           "thumbnail_url": "https://jtcyeufhvpieyngracpo.supabase.co/storage/v1/object/public/thumbnails/thumb_a70ccf69d67a.png",
           "is_freemium": true,
           "is_locked": false,
-          "matchScore": 258,
+          "matchScore": 278,
           "matchedExams": [
             "Constable",
             "SSC GD Constable (General Duty)",
             "SSC Constable (Tradesman)",
-            "UKSSSC Stenographer"
+            "UKSSSC Stenographer",
+            "UKSSSC Junior Assistant"
           ]
         }
       ]

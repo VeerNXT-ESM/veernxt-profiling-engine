@@ -1,12 +1,12 @@
 /**
  * Military Trade / Arm / Corps  →  Civilian Career Track mapping.
  *
- * Each military trade or skillset maps to:
- *   - strong[]:  career tracks where the Agniveer's skills give a REAL edge
- *   - soft[]:    career tracks where skills are adjacent/transferable
- *
- * Source buckets referenced match career_track values in exam_master.json.
+ * Upgraded to dynamically ingest the compiled Tri-Service Designations
+ * database (Service_Detail.csv) to support granular role-to-arm mapping.
  */
+
+const fs = require('fs');
+const path = require('path');
 
 const TRADE_MAP = {
   // ---- Combat Arms ----
@@ -70,15 +70,101 @@ const TRADE_MAP = {
   'Instruction/Training':    { strong: ['TEACHING','ADMINISTRATIVE'], soft: ['SSC'] },
 };
 
+// Map the raw Arm/Corps names from Service_Detail.csv to standard TRADE_MAP keys
+const ARM_CORPS_MAP = {
+  // Army Combat
+  'INFANTRY': 'Infantry',
+  'MECHANISED INFANTRY': 'Mechanised Infantry',
+  'ARMOURED CORPS': 'Armoured',
+  'ARTILLERY': 'Artillery',
+  'AIR DEFENCE ARTILLERY': 'Artillery',
+  'SPECIAL FORCES': 'Infantry',
+  
+  // Army Support & Services
+  'ARMY AVIATION CORPS': 'Army Aviation',
+  'CORPS OF ENGINEERS': 'Engineers',
+  'CORPS OF SIGNALS': 'Signals',
+  'ARMY SERVICE CORPS (ASC)': 'ASC',
+  'ARMY ORDNANCE CORPS (AOC)': 'AOC',
+  'ELECTRICAL AND MECHANICAL ENGINEERS (EME)': 'EME',
+  'ARMY MEDICAL CORPS (AMC)': 'AMC',
+  'ARMY DENTAL CORPS (ADC)': 'AMC',
+  'REMOUNT AND VETERINARY CORPS (RVC)': 'RVC',
+  'REMOUNT TRAINING CENTRE': 'RVC',
+  'INTELLIGENCE CORPS': 'Intelligence',
+  'ARMY POSTAL SERVICE (APS)': 'ASC',
+  'PIONEER CORPS': 'Engineers',
+  'DEFENCE SECURITY CORPS (DSC)': 'General Duty',
+  'CORPS OF MILITARY POLICE (CMP)': 'General Duty',
+  'ARMY PAY CORPS (APC)': 'Clerk',
+  'REMOUNT TRAINING CENTRE': 'RVC',
+  
+  // Navy Branches
+  'EXECUTIVE BRANCH (Seamen Branch)': 'Seaman',
+  'COMMUNICATIONS BRANCH': 'Signals',
+  'ENGINEERING BRANCH (Marine Engineering)': 'Engineering (Navy)',
+  'WEAPON BRANCH (Seaman Specialist / Gunnery)': 'Seaman',
+  'NAVAL AIR ARM (Aviation Branch)': 'Army Aviation',
+  'SUBMARINE BRANCH': 'Seaman',
+  'NAVAL MEDICAL BRANCH': 'AMC',
+  'SURVEY BRANCH (Hydrographic)': 'Hydro',
+  'NAVAL EDUCATION & METEOROLOGY': 'AEC',
+  'INDIAN COAST GUARD (Aligned with Navy)': 'Seaman',
+  
+  // Air Force Branches
+  'FLYING BRANCH': 'Army Aviation',
+  'GROUND DUTY TECHNICAL (Airmen)': 'Mechanical Fitter',
+  'GROUND DUTY NON-TECHNICAL (Admin / Logistics)': 'Clerk',
+  'IAF MEDICAL BRANCH (Airmen)': 'AMC',
+  'METEOROLOGY BRANCH (Airmen)': 'AEC',
+  'IAF REGIMENT (Ground Defence)': 'General Duty',
+  'IAF SIGNALS BRANCH': 'Signals',
+  'IAF EDUCATION BRANCH': 'AEC',
+  'IAF FIRE SERVICES': 'General Duty',
+  'IAF PIONEER & WORKS SERVICES': 'Engineers',
+  'IAF CATERING BRANCH': 'Cook',
+  'IAF MUSIC BRANCH (Bands)': 'General Duty'
+};
+
+// Ingest compiled designations at startup
+let compiledDesignations = [];
+try {
+  const jsonPath = path.resolve(__dirname, '../../data/designations.json');
+  if (fs.existsSync(jsonPath)) {
+    compiledDesignations = JSON.parse(fs.readFileSync(jsonPath, 'utf-8')).designations;
+  }
+} catch (err) {
+  // Graceful fallback to avoid crashes if parser has not run
+  console.warn('Warning: Could not load designations.json from path, fallback to empty lookup:', err.message);
+}
+
 /**
  * Resolve trade to tracks with graceful fallback for partial string matches.
+ * Hierarchically checks specific designations, resolving their parent Arms/Corps
+ * to civilian career tracks.
  */
 function resolveTradeTracks(tradeString = '', skills = []) {
   const inputs = [tradeString, ...skills]
     .filter(Boolean)
-    .map(s => s.toLowerCase());
+    .map(s => s.toLowerCase().trim());
+  
   const matched = { strong: new Set(), soft: new Set() };
 
+  // 1. Hierarchical specific designation match
+  compiledDesignations.forEach(des => {
+    const desLower = des.trade.toLowerCase().trim();
+    
+    // Check if user inputs match specific designation (substring match)
+    if (inputs.some(s => s.includes(desLower) || desLower.includes(s))) {
+      const parentArmKey = ARM_CORPS_MAP[des.arm_corps];
+      if (parentArmKey && TRADE_MAP[parentArmKey]) {
+        TRADE_MAP[parentArmKey].strong.forEach(t => matched.strong.add(t));
+        TRADE_MAP[parentArmKey].soft.forEach(t => matched.soft.add(t));
+      }
+    }
+  });
+
+  // 2. Direct default TRADE_MAP key match (preserves backwards compatibility)
   for (const key of Object.keys(TRADE_MAP)) {
     const k = key.toLowerCase();
     if (inputs.some(s => s.includes(k) || k.includes(s))) {
@@ -86,6 +172,7 @@ function resolveTradeTracks(tradeString = '', skills = []) {
       TRADE_MAP[key].soft.forEach(t => matched.soft.add(t));
     }
   }
+
   return {
     strong: [...matched.strong],
     soft:   [...matched.soft],

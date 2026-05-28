@@ -40,7 +40,7 @@ The table below displays how many candidates received each career track as their
 | **RAILWAYS** | 4 | 3.5% |
 
 ### Track Diversity in Top-10
-* **Average Unique Tracks per Candidate Top-10:** **4.50** (out of a max possible 6 due to track diversification caps)
+* **Average Unique Tracks per Candidate Top-10:** **4.51** (out of a max possible 6 due to track diversification caps)
 * **Preference Alignment Rate:** **97.3%** 
   *(The percentage of candidates whose #1 recommendation is within their stated career preference buckets: Central Govt, State Govt, Banking, etc.)*
 
@@ -56,14 +56,14 @@ The number of candidates who had at least one exam from each career track in the
 | **GROUP_D** | 26 | 23.0% |
 | **ENGINEERING** | 24 | 21.2% |
 | **FIRE** | 17 | 15.0% |
-| **ADMINISTRATIVE** | 14 | 12.4% |
+| **ADMINISTRATIVE** | 15 | 13.3% |
 | **PSU** | 14 | 12.4% |
 | **CIVIL_SERVICES** | 13 | 11.5% |
 | **FOREST** | 12 | 10.6% |
 | **SECRETARIAT** | 7 | 6.2% |
+| **POSTAL** | 4 | 3.5% |
 | **TEACHING** | 3 | 2.7% |
 | **JUDICIARY** | 3 | 2.7% |
-| **POSTAL** | 3 | 2.7% |
 | **REVENUE** | 2 | 1.8% |
 | **AGRICULTURE** | 2 | 1.8% |
 | **GROUP_C** | 1 | 0.9% |
@@ -93,7 +93,7 @@ We aggregated every scoring breakdown key across all recommendations. The table 
 | `ex_servicemen_quota` | 19.8 pts | Ex-Servicemen Quota (+25) |
 | `priority_track` | 13.3 pts | Dynamic Input |
 | `preference_central_govt` | 8.7 pts | Career Preference Match (+15/20) |
-| `trade_strong_match` | 8.6 pts | Strong Military Trade Mapping (+20) |
+| `trade_strong_match` | 8.5 pts | Strong Military Trade Mapping (+20) |
 | `physical_fit` | 7.9 pts | Physical Fitness Standard (+10) |
 | `preference_state_govt` | 7.4 pts | Career Preference Match (+15/20) |
 | `domicile_home` | 6.3 pts | State Domicile Match (+18) |
@@ -709,17 +709,17 @@ This section displays the detailed report cards for the 113 candidates tested.
 | 3 | RSMSSB Driver |  | `POLICE_CAPF` | **112** | ex servicemen quota(+25), preference central govt(+20), priority track(+15) |
 | 4 | Constable (Driver) | Delhi Police | `POLICE_CAPF` | **112** | ex servicemen quota(+25), preference central govt(+20), priority track(+15) |
 | 5 | APSSB Personal Assistant / Stenographer |  | `POLICE_CAPF` | **111** | ex servicemen quota(+25), preference central govt(+20), priority track(+15) |
-| 6 | SSC GD Constable (General Duty) | Staff Selection Commission | `SSC` | **109** | ex servicemen quota(+25), preference central govt(+20), priority track(+15) |
-| 7 | SSC Constable (Tradesman) | Staff Selection Commission | `SSC` | **109** | ex servicemen quota(+25), preference central govt(+20), priority track(+15) |
-| 8 | ONGC Recruitment | Oil and Natural Gas Corporation (ONGC) | `PSU` | **97** | preference central govt(+20), trade strong match(+20), preference banking psu(+16) |
-| 9 | BHEL Recruitment | Bharat Heavy Electricals Limited (BHEL) | `PSU` | **97** | preference central govt(+20), trade strong match(+20), preference banking psu(+16) |
-| 10 | BPCL Recruitment | Bharat Petroleum Corporation Limited (BPCL) | `PSU` | **97** | preference central govt(+20), trade strong match(+20), preference banking psu(+16) |
+| 6 | Odisha GDS (Gramin Dak Sevak) | Odisha Postal Circle | `POSTAL` | **111** | ex servicemen quota(+25), preference central govt(+20), trade strong match(+20) |
+| 7 | SSC GD Constable (General Duty) | Staff Selection Commission | `SSC` | **109** | ex servicemen quota(+25), preference central govt(+20), priority track(+15) |
+| 8 | SSC Constable (Tradesman) | Staff Selection Commission | `SSC` | **109** | ex servicemen quota(+25), preference central govt(+20), priority track(+15) |
+| 9 | ONGC Recruitment | Oil and Natural Gas Corporation (ONGC) | `PSU` | **97** | preference central govt(+20), trade strong match(+20), preference banking psu(+16) |
+| 10 | BHEL Recruitment | Bharat Heavy Electricals Limited (BHEL) | `PSU` | **97** | preference central govt(+20), trade strong match(+20), preference banking psu(+16) |
 
 #### Matched Preparation Materials (Top 5)
-* **[Delhi_Police_Driver_Traffic_Rules]** (Subject: `GK` | Category: `Guide`) — Relevance Score: **473.5** (Matches: *APSSB Driver, RSMSSB Driver, Constable (Driver), APSSB Personal Assistant / Stenographer, SSC GD Constable (General Duty), SSC Constable (Tradesman)*)
-* **[SSC GS & GK GUIDE BOOK]** (Subject: `GK` | Category: `Guide`) — Relevance Score: **429.5** (Matches: *APSSB Driver, RSMSSB Driver, APSSB Personal Assistant / Stenographer*)
-* **[ITI_Technical_Trade_Literacy_GUIDE BOOK]** (Subject: `GK` | Category: `Guide`) — Relevance Score: **417.5** (Matches: *APSSB Driver, RSMSSB Driver, APSSB Personal Assistant / Stenographer, SSC GD Constable (General Duty), SSC Constable (Tradesman)*)
-* **[Computer Science guide Book]** (Subject: `GK` | Category: `Guide`) — Relevance Score: **417.5** (Matches: *APSSB Driver, RSMSSB Driver, APSSB Personal Assistant / Stenographer, SSC GD Constable (General Duty), SSC Constable (Tradesman)*)
+* **[Delhi_Police_Driver_Traffic_Rules]** (Subject: `GK` | Category: `Guide`) — Relevance Score: **458.5** (Matches: *APSSB Driver, RSMSSB Driver, Constable (Driver), APSSB Personal Assistant / Stenographer, SSC GD Constable (General Duty), SSC Constable (Tradesman)*)
+* **[SSC GS & GK GUIDE BOOK]** (Subject: `GK` | Category: `Guide`) — Relevance Score: **422.5** (Matches: *APSSB Driver, RSMSSB Driver, APSSB Personal Assistant / Stenographer*)
+* **[ITI_Technical_Trade_Literacy_GUIDE BOOK]** (Subject: `GK` | Category: `Guide`) — Relevance Score: **402.5** (Matches: *APSSB Driver, RSMSSB Driver, APSSB Personal Assistant / Stenographer, SSC GD Constable (General Duty), SSC Constable (Tradesman)*)
+* **[Computer Science guide Book]** (Subject: `GK` | Category: `Guide`) — Relevance Score: **402.5** (Matches: *APSSB Driver, RSMSSB Driver, APSSB Personal Assistant / Stenographer, SSC GD Constable (General Duty), SSC Constable (Tradesman)*)
 * **[RRB RPF CONSTABLE]** (Subject: `General` | Category: `Intro`) — Relevance Score: **370** (Matches: *RPF Constable, APSSB Driver, RSMSSB Driver, APSSB Personal Assistant / Stenographer*)
 
 
@@ -1110,15 +1110,15 @@ This section displays the detailed report cards for the 113 candidates tested.
 | 6 | SSC GD Constable (General Duty) | Staff Selection Commission | `SSC` | **78** | ex servicemen quota(+25), priority track(+15), trade soft match(+10) |
 | 7 | SSC Constable (Tradesman) | Staff Selection Commission | `SSC` | **78** | ex servicemen quota(+25), priority track(+15), trade soft match(+10) |
 | 8 | UKSSSC Stenographer |  | `SSC` | **60** | domicile home(+18), priority track(+15), qualification exact(+15) |
-| 9 | UKSSSC Group C/D (Peon/MTS) | UKSSSC | `GROUP_C` | **54** | preference state govt(+18), domicile home(+18), qualification over(+8) |
-| 10 | Railways Group D | RRB (Railway Recruitment Board) | `RAILWAYS` | **53** | trade strong match(+20), priority track(+15), qualification over(+8) |
+| 9 | UKSSSC Junior Assistant |  | `ADMINISTRATIVE` | **56** | preference state govt(+18), domicile home(+18), trade soft match(+10) |
+| 10 | UKSSSC Group C/D (Peon/MTS) | UKSSSC | `GROUP_C` | **54** | preference state govt(+18), domicile home(+18), qualification over(+8) |
 
 #### Matched Preparation Materials (Top 5)
-* **[RRB RPF CONSTABLE]** (Subject: `General` | Category: `Intro`) — Relevance Score: **450** (Matches: *Constable, RPF Constable, UKSSSC Stenographer*)
-* **[Delhi_Police_Driver_Traffic_Rules]** (Subject: `GK` | Category: `Guide`) — Relevance Score: **423** (Matches: *Constable, SSC GD Constable (General Duty), SSC Constable (Tradesman), UKSSSC Stenographer*)
-* **[SSC DELHI POLICE CONSTABLE]** (Subject: `General` | Category: `Intro`) — Relevance Score: **402** (Matches: *Constable, SSC GD Constable (General Duty), SSC Constable (Tradesman), UKSSSC Stenographer*)
-* **[SSC GD]** (Subject: `General` | Category: `Intro`) — Relevance Score: **298** (Matches: *Constable, SSC GD Constable (General Duty), SSC Constable (Tradesman), UKSSSC Stenographer*)
-* **[SSC DELHI POLICE CONSTABL_DRIVER_MALE]** (Subject: `General` | Category: `Intro`) — Relevance Score: **258** (Matches: *Constable, SSC GD Constable (General Duty), SSC Constable (Tradesman), UKSSSC Stenographer*)
+* **[RRB RPF CONSTABLE]** (Subject: `General` | Category: `Intro`) — Relevance Score: **470** (Matches: *Constable, RPF Constable, UKSSSC Stenographer, UKSSSC Junior Assistant*)
+* **[Delhi_Police_Driver_Traffic_Rules]** (Subject: `GK` | Category: `Guide`) — Relevance Score: **440** (Matches: *Constable, SSC GD Constable (General Duty), SSC Constable (Tradesman), UKSSSC Stenographer, UKSSSC Junior Assistant*)
+* **[SSC DELHI POLICE CONSTABLE]** (Subject: `General` | Category: `Intro`) — Relevance Score: **422** (Matches: *Constable, SSC GD Constable (General Duty), SSC Constable (Tradesman), UKSSSC Stenographer, UKSSSC Junior Assistant*)
+* **[SSC GD]** (Subject: `General` | Category: `Intro`) — Relevance Score: **318** (Matches: *Constable, SSC GD Constable (General Duty), SSC Constable (Tradesman), UKSSSC Stenographer, UKSSSC Junior Assistant*)
+* **[SSC DELHI POLICE CONSTABL_DRIVER_MALE]** (Subject: `General` | Category: `Intro`) — Relevance Score: **278** (Matches: *Constable, SSC GD Constable (General Duty), SSC Constable (Tradesman), UKSSSC Stenographer, UKSSSC Junior Assistant*)
 
 
 #### Active Vacancy Notifications & Exam Dates
