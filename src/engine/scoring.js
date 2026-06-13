@@ -3,8 +3,8 @@
  * Call scoreExam(profile, exam) → { score, breakdown } after eligibility passes.
  */
 
-const W             = require('../config/weights');
-const PREF_MAP      = require('../config/preferenceMap');
+const W = require('../config/weights');
+const PREF_MAP = require('../config/preferenceMap');
 const { resolveTradeTracks } = require('../config/tradeMap');
 const { mapQual, QUAL_RANK } = require('./eligibility');
 
@@ -76,7 +76,7 @@ function scoreExam(profile, exam, options = {}) {
 
   // 6. Domicile match (home state)
   if (exam.state_ut && profile.stateOfDomicile &&
-      exam.state_ut.toLowerCase().trim() === profile.stateOfDomicile.toLowerCase().trim()) {
+    exam.state_ut.toLowerCase().trim() === profile.stateOfDomicile.toLowerCase().trim()) {
     add(breakdown, 'domicile_home', W.DOMICILE_MATCH_BONUS);
   }
 
@@ -100,7 +100,7 @@ function scoreExam(profile, exam, options = {}) {
   }
 
   // 10. Sports quota
-  if (exam.sports_quota_eligible || ['POLICE_CAPF','DEFENCE','RAILWAYS'].includes(exam.career_track)) {
+  if (exam.sports_quota_eligible || ['POLICE_CAPF', 'DEFENCE', 'RAILWAYS'].includes(exam.career_track)) {
     add(breakdown, 'sports_quota', W.SPORTS_BONUS[profile.sportsAchievement] || 0);
   }
 
@@ -118,7 +118,7 @@ function scoreExam(profile, exam, options = {}) {
 
   // 13. Physical fit bonus (for uniformed)
   if (exam.physical_required && profile.medicalCategory === 'SHAPE-1' &&
-      profile.physicalProficiency !== 'Satisfactory') {
+    profile.physicalProficiency !== 'Satisfactory') {
     add(breakdown, 'physical_fit', W.PHYSICAL_MATCH_BONUS);
   }
 
@@ -131,7 +131,8 @@ function scoreExam(profile, exam, options = {}) {
     add(breakdown, 'technical_trade_alignment', 8);
   }
 
-  const score = Object.values(breakdown).reduce((a, b) => a + b, 0);
+  let score = Object.values(breakdown).reduce((a, b) => a + b, 0);
+  score = Math.min(score, 100);
   return { score, breakdown };
 }
 
